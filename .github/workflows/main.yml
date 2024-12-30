@@ -31,7 +31,7 @@ jobs:
 
       # Authenticate with AWS using OIDC
       - name: Configure AWS Credentials with OIDC
-        uses: aws-actions/configure-aws-credentials@v1
+        uses: aws-actions/configure-aws-credentials@v3
         with:
           role-to-assume: arn:aws:iam::418272776375:role/oidc-actions  # Ensure this ARN is correct
           aws-region: ap-northeast-3  # Your AWS region
