@@ -1,0 +1,43 @@
+name: Terraform AWS Infrastructure with OIDC
+
+on:
+  push:
+    branches:
+      - main  # Trigger workflow on changes to the main branch
+  pull_request:
+    branches:
+      - main  # Trigger on PR to main branch
+
+jobs:
+  terraform:
+    runs-on: ubuntu-latest
+
+    steps:
+      # Checkout the code
+      - name: Checkout repository
+        uses: actions/checkout@v2
+
+      # Set up Terraform
+      - name: Set up Terraform
+        uses: hashicorp/setup-terraform@v1
+        with:
+          terraform_version: 1.5.0  # You can specify a version here
+
+      # Authenticate with AWS using OIDC
+      - name: Configure AWS Credentials with OIDC
+        uses: aws-actions/configure-aws-credentials@v1
+        with:
+          role-to-assume: arn:aws:iam::418272776375:role/oidc-actions
+          aws-region: ap-northeast-3  # Your AWS region
+
+      # Initialize Terraform
+      - name: Terraform Init
+        run: terraform init
+
+      # Run Terraform Plan to see what changes will be made
+      - name: Terraform Plan
+        run: terraform plan
+
+      # Apply Terraform changes
+      - name: Terraform Apply
+        run: terraform apply -auto-approve
