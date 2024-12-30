@@ -8,16 +8,15 @@ on:
     branches:
       - main  # Trigger on PR to main branch
   workflow_dispatch:  # This allows manual triggers
-
-jobs:
-  terraform:
-    runs-on: ubuntu-latest
-
     inputs:
       action:
         description: 'Action to perform: apply or destroy'
         required: true
         default: 'apply'  # Default action is 'apply'
+
+jobs:
+  terraform:
+    runs-on: ubuntu-latest
 
     steps:
       # Checkout the code
@@ -47,10 +46,10 @@ jobs:
 
       # Conditionally apply or destroy based on the action input
       - name: Terraform Apply
-        if: ${{ inputs.action == 'apply' }}  # Apply if the action is 'apply'
+        if: ${{ github.event.inputs.action == 'apply' }}  # Apply if the action is 'apply'
         run: terraform apply -auto-approve
 
       # Conditionally destroy based on the action input
       - name: Terraform Destroy
-        if: ${{ inputs.action == 'destroy' }}  # Destroy if the action is 'destroy'
+        if: ${{ github.event.inputs.action == 'destroy' }}  # Destroy if the action is 'destroy'
         run: terraform destroy -auto-approve
