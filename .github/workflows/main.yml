@@ -7,10 +7,17 @@ on:
   pull_request:
     branches:
       - main  # Trigger on PR to main branch
+  workflow_dispatch:  # This allows manual triggers
 
 jobs:
   terraform:
     runs-on: ubuntu-latest
+
+    inputs:
+      action:
+        description: 'Action to perform: apply or destroy'
+        required: true
+        default: 'apply'  # Default action is 'apply'
 
     steps:
       # Checkout the code
@@ -21,23 +28,29 @@ jobs:
       - name: Set up Terraform
         uses: hashicorp/setup-terraform@v1
         with:
-          terraform_version: 1.5.0  # You can specify a version here
+          terraform_version: 1.5.0  # Specify the Terraform version here
 
       # Authenticate with AWS using OIDC
       - name: Configure AWS Credentials with OIDC
         uses: aws-actions/configure-aws-credentials@v1
         with:
-          role-to-assume: arn:aws:iam::418272776375:role/oidc-actions
+          role-to-assume: arn:aws:iam::418272776375:role/oidc-actions  # Ensure this ARN is correct
           aws-region: ap-northeast-3  # Your AWS region
 
       # Initialize Terraform
       - name: Terraform Init
         run: terraform init
 
-      # Run Terraform Plan to see what changes will be made
+      # Terraform Plan (to preview the changes)
       - name: Terraform Plan
         run: terraform plan
 
-      # Apply Terraform changes
+      # Conditionally apply or destroy based on the action input
       - name: Terraform Apply
+        if: ${{ inputs.action == 'apply' }}  # Apply if the action is 'apply'
         run: terraform apply -auto-approve
+
+      # Conditionally destroy based on the action input
+      - name: Terraform Destroy
+        if: ${{ inputs.action == 'destroy' }}  # Destroy if the action is 'destroy'
+        run: terraform destroy -auto-approve
