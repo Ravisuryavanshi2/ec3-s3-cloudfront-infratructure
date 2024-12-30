@@ -39,20 +39,20 @@ jobs:
           aws-region: ap-northeast-3  # Your AWS region
           role-session-name: samplerolesession
 
-      # # Initialize Terraform
-      # - name: Terraform Init
-      #   run: terraform init
+      # Initialize Terraform
+      - name: Terraform Init
+        run: terraform init
 
-      # # Terraform Plan (to preview the changes)
-      # - name: Terraform Plan
-      #   run: terraform plan
+      # Terraform Plan (to preview the changes)
+      - name: Terraform Plan
+        run: terraform plan
 
-      # # Conditionally apply or destroy based on the action input
-      # - name: Terraform Apply
-      #   if: ${{ github.event.inputs.action == 'apply' }}  # Apply if the action is 'apply'
-      #   run: terraform apply -auto-approve
+      # Conditionally apply or destroy based on the action input
+      - name: Terraform Apply
+        if: ${{ github.event.inputs.action == 'apply' }}  # Apply if the action is 'apply'
+        run: terraform apply -auto-approve
 
-      # # Conditionally destroy based on the action input
-      # - name: Terraform Destroy
-      #   if: ${{ github.event.inputs.action == 'destroy' }}  # Destroy if the action is 'destroy'
-      #   run: terraform destroy -auto-approve
+      # Conditionally destroy based on the action input
+      - name: Terraform Destroy
+        if: ${{ github.event.inputs.action == 'destroy' }}  # Destroy if the action is 'destroy'
+        run: terraform destroy -auto-approve
